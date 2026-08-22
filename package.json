@@ -1,0 +1,6 @@
+{
+  "name": "interview-prep-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-service interview prep dashboard: upload a resume, cover letter and job description, get a fit assessment, 180-day roadmap, STAR flashcards, a pitch and a podcast script."
+}

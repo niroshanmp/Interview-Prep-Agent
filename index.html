@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Interview Prep Dashboard — Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1E33; --ink-2:#16324F; --paper:#F6F3EA; --paper-2:#EFEADB;
+    --card:#FFFFFF; --line:#DAD3BF; --line-strong:#B9AF92;
+    --teal:#0F6E56; --teal-ink:#0A4A3A; --teal-bg:#E1F0EA;
+    --amber:#B97318; --amber-ink:#7A4B0F; --amber-bg:#F7EAD4;
+    --coral:#B0402F; --coral-bg:#F5E3DE;
+    --text:#1C2B3A; --text-soft:#5C6B7A; --text-mute:#8B9199;
+    --serif:'Fraunces', Georgia, serif; --sans:'Inter', -apple-system, sans-serif; --mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);}
+  .app{display:flex;min-height:640px;max-width:1180px;margin:0 auto;border:1px solid var(--line);background:var(--paper);}
+  .sidebar{width:230px;flex-shrink:0;background:var(--ink);color:#EDE7D6;padding:28px 20px;display:flex;flex-direction:column;}
+  .brand{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8FA3B8;margin-bottom:4px;}
+  .role{font-family:var(--serif);font-size:19px;font-weight:500;line-height:1.25;margin:0 0 2px;color:#fff;}
+  .company{font-size:13px;color:#B7C2CE;margin-bottom:26px;min-height:16px;}
+  .stamp{border:1.5px solid #3E9C7E;border-radius:50%;width:104px;height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:4px auto 26px;transform:rotate(-6deg);}
+  .stamp .n{font-family:var(--serif);font-size:24px;font-weight:600;color:#5FD9AE;line-height:1;}
+  .stamp .lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:#9FE3C8;margin-top:4px;text-align:center;text-transform:uppercase;}
+  nav{display:flex;flex-direction:column;gap:2px;}
+  .navbtn{all:unset;cursor:pointer;font-family:var(--sans);font-size:13.5px;color:#C6D0DA;padding:9px 10px;border-left:2px solid transparent;display:flex;align-items:center;gap:9px;}
+  .navbtn .tag{font-family:var(--mono);font-size:10px;color:#6E8398;width:16px;}
+  .navbtn:hover{background:rgba(255,255,255,.05);}
+  .navbtn.active{color:#fff;border-left-color:#5FD9AE;background:rgba(95,217,174,.08);}
+  .navbtn.active .tag{color:#5FD9AE;}
+  .navbtn:disabled{opacity:.4;cursor:not-allowed;}
+  .sidebar-foot{margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:#6E8398;line-height:1.6;}
+  .resetbtn{all:unset;cursor:pointer;font-family:var(--mono);font-size:10.5px;color:#F0B368;margin-top:10px;display:inline-block;}
+  .resetbtn:hover{color:#fff;}
+
+  .main{flex:1;padding:34px 42px;min-width:0;}
+  .view{display:none;}
+  .view.active{display:block;}
+  h1.pagehead{font-family:var(--serif);font-size:26px;font-weight:500;margin:0 0 4px;color:var(--ink-2);}
+  .pagesub{font-size:13.5px;color:var(--text-soft);margin:0 0 28px;}
+
+  .upfields{display:flex;flex-direction:column;gap:18px;margin-bottom:22px;}
+  .upfield{background:var(--card);border:1px solid var(--line);padding:16px 18px;transition:border-color .15s ease,background .15s ease;}
+  .upfield.dragover{border-color:var(--teal);background:var(--teal-bg);border-style:dashed;}
+  .upfield-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .upfield-head h3{font-family:var(--serif);font-weight:500;font-size:15px;margin:0;color:var(--ink-2);display:flex;align-items:baseline;gap:8px;}
+  .reqtag{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--coral);background:var(--coral-bg);padding:2px 7px;border-radius:2px;}
+  .opttag{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-soft);background:var(--paper-2);padding:2px 7px;border-radius:2px;}
+  .filenative{font-family:var(--sans);font-size:11.5px;color:var(--text);max-width:230px;}
+  .filenative::file-selector-button{font-family:var(--mono);font-size:11px;color:var(--teal-ink);background:var(--teal-bg);border:1px solid var(--teal);padding:5px 10px;cursor:pointer;margin-right:8px;border-radius:2px;}
+  .filenative::file-selector-button:hover{background:var(--teal);color:#fff;}
+  .filemeta{font-family:var(--mono);font-size:11px;margin-bottom:6px;min-height:14px;color:var(--text-soft);}
+  .filemeta.ok{color:var(--teal-ink);}
+  .filemeta.err{color:var(--coral);}
+  textarea{width:100%;min-height:90px;resize:vertical;border:1px solid var(--line);background:var(--paper-2);font-family:var(--sans);font-size:13px;padding:10px 12px;color:var(--text);line-height:1.5;}
+  textarea:focus{outline:none;border-color:var(--teal);}
+  .genbtn{all:unset;cursor:pointer;font-family:var(--sans);font-size:14px;font-weight:500;padding:12px 22px;background:var(--teal);color:#fff;display:inline-block;}
+  .genbtn:hover{background:var(--teal-ink);}
+  .genbtn:disabled{background:var(--line-strong);cursor:not-allowed;}
+  .genrow{display:flex;align-items:center;gap:14px;}
+  .status{font-size:12.5px;color:var(--text-soft);font-family:var(--mono);}
+  .status .ok{color:var(--teal-ink);}
+  .status .err{color:var(--coral);}
+  .errbox{background:var(--coral-bg);border-left:2px solid var(--coral);padding:10px 14px;font-size:12.5px;color:#5C2618;margin-top:14px;}
+
+  .empty{font-size:13.5px;color:var(--text-soft);font-style:italic;padding:40px 0;text-align:center;}
+  .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line-strong);border-top-color:var(--teal);border-radius:50%;animation:sp .7s linear infinite;margin-right:6px;vertical-align:-1px;}
+  @keyframes sp{to{transform:rotate(360deg);}}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px;}
+  .stat{background:var(--card);border:1px solid var(--line);padding:16px 16px 14px;}
+  .stat .v{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink-2);}
+  .stat .k{font-size:11.5px;color:var(--text-soft);margin-top:2px;}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .panel{background:var(--card);border:1px solid var(--line);padding:20px 22px;}
+  .panel h2{font-family:var(--serif);font-weight:500;font-size:16.5px;margin:0 0 14px;color:var(--ink-2);display:flex;align-items:center;gap:8px;}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .dot.teal{background:var(--teal);} .dot.amber{background:var(--amber);}
+  ul.plain{list-style:none;margin:0;padding:0;}
+  ul.plain li{font-size:13.5px;line-height:1.6;padding:9px 0;border-top:1px solid var(--line);}
+  ul.plain li:first-child{border-top:none;padding-top:0;}
+  ul.plain li b{color:var(--ink-2);}
+  .note{margin-top:18px;background:var(--coral-bg);border-left:2px solid var(--coral);padding:11px 14px;font-size:12.5px;color:#5C2618;}
+
+  .phases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:10px;}
+  .phase{background:var(--card);border:1px solid var(--line);padding:18px 18px 16px;}
+  .phase .rng{font-family:var(--mono);font-size:11px;color:var(--teal-ink);letter-spacing:.04em;}
+  .phase h3{font-family:var(--serif);font-size:17px;font-weight:500;margin:4px 0 10px;color:var(--ink-2);}
+  .phase p.focus{font-size:12.5px;color:var(--text-soft);margin:0 0 12px;line-height:1.55;}
+  .phase .actions{font-size:12px;line-height:1.6;color:var(--text);margin:0 0 12px;padding-left:16px;}
+  .phase .signal{font-size:11.5px;color:var(--teal-ink);background:var(--teal-bg);padding:8px 10px;border-radius:2px;}
+
+  .deckhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .progress-wrap{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-soft);}
+  .progress-bar{width:130px;height:6px;background:var(--paper-2);border:1px solid var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:var(--teal);width:0%;transition:width .25s ease;}
+
+  .deck{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .card{background:var(--card);border:1px solid var(--line);min-height:220px;padding:16px 18px;cursor:pointer;position:relative;display:flex;flex-direction:column;}
+  .card.done{border-color:var(--teal);}
+  .card .qn{font-family:var(--mono);font-size:10.5px;color:var(--text-mute);letter-spacing:.06em;}
+  .card h3{font-family:var(--serif);font-weight:500;font-size:15px;margin:6px 0 8px;color:var(--ink-2);}
+  .card .scn{font-size:12px;color:var(--text-soft);font-style:italic;line-height:1.5;}
+  .card .hint{margin-top:auto;font-size:11px;color:var(--text-mute);padding-top:10px;}
+  .card .star{display:none;font-size:12px;line-height:1.55;}
+  .card.flipped .scn{display:none;}
+  .card.flipped .star{display:block;}
+  .card .star p{margin:0 0 8px;}
+  .card .star b{color:var(--ink-2);}
+  .checkbtn{all:unset;cursor:pointer;position:absolute;top:14px;right:14px;width:20px;height:20px;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;}
+  .card.done .checkbtn{border-color:var(--teal);background:var(--teal);color:#fff;}
+
+  .pitchbox{background:var(--card);border:1px solid var(--line);padding:26px 30px;font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--ink-2);}
+  .pitchbox p{margin:0 0 16px;}
+  .pitchmeta{display:flex;gap:18px;font-family:var(--mono);font-size:11px;color:var(--text-soft);margin-bottom:14px;}
+
+  .podcast-actions{display:flex;gap:10px;margin-bottom:18px;align-items:center;}
+  button.act{all:unset;cursor:pointer;font-family:var(--sans);font-size:12.5px;font-weight:500;padding:9px 16px;border:1px solid var(--ink-2);color:var(--ink-2);}
+  button.act:hover{background:var(--ink-2);color:#fff;}
+  button.act.primary{background:var(--teal);border-color:var(--teal);color:#fff;}
+  button.act.primary:hover{background:var(--teal-ink);}
+  button.act:disabled{opacity:.5;cursor:not-allowed;}
+  .scriptbox{background:var(--ink);color:#DCE6E0;font-family:var(--mono);font-size:12.3px;line-height:1.75;padding:22px 26px;white-space:pre-wrap;display:none;max-height:520px;overflow-y:auto;}
+  .scriptbox.show{display:block;}
+  .copied{font-family:var(--mono);font-size:11px;color:var(--teal-ink);margin-left:6px;}
+
+  @media (max-width: 860px){
+    .app{flex-direction:column;}
+    .sidebar{width:auto;}
+    .cols,.phases,.deck,.stats{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="brand">Interview prep template</div>
+    <p class="role" id="sbRole">No candidate loaded</p>
+    <div class="company" id="sbCompany">Upload a resume, cover letter and job description to begin</div>
+    <div class="stamp">
+      <div class="n" id="stampNum">&mdash;</div>
+      <div class="lbl">rehearsed</div>
+    </div>
+    <nav>
+      <button class="navbtn active" data-view="upload"><span class="tag">00</span>Upload</button>
+      <button class="navbtn" data-view="overview" disabled><span class="tag">01</span>Overview</button>
+      <button class="navbtn" data-view="fit" disabled><span class="tag">02</span>Fit scan</button>
+      <button class="navbtn" data-view="roadmap" disabled><span class="tag">03</span>180-day roadmap</button>
+      <button class="navbtn" data-view="deck" disabled><span class="tag">04</span>STAR flashcards</button>
+      <button class="navbtn" data-view="pitch" disabled><span class="tag">05</span>Winning pitch</button>
+      <button class="navbtn" data-view="podcast" disabled><span class="tag">06</span>Podcast script</button>
+    </nav>
+    <div class="sidebar-foot">
+      Paste or upload the resume, cover letter and job ad, then generate. Nothing is stored anywhere &mdash; each session starts fresh.
+      <button class="resetbtn" id="resetBtn">&#8635; Start over</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="view active" id="view-upload">
+      <h1 class="pagehead">Build your prep pack</h1>
+      <p class="pagesub">Upload a PDF, Word (.docx) or text file for each document, or paste the content directly.</p>
+      <div class="upfields">
+        <div class="upfield" data-drop="resumeText">
+          <div class="upfield-head"><h3>Resume / CV <span class="reqtag">required</span></h3>
+            <input type="file" class="filenative" accept=".txt,.md,.pdf,.docx" id="resumeText-file" data-target="resumeText">
+          </div>
+          <div class="filemeta" id="resumeText-meta">Or drag a file into this box, or paste text below</div>
+          <textarea id="resumeText" placeholder="Paste the candidate's resume text here, or upload a PDF / Word / text file above"></textarea>
+        </div>
+        <div class="upfield" data-drop="coverText">
+          <div class="upfield-head"><h3>Cover letter <span class="opttag">optional</span></h3>
+            <input type="file" class="filenative" accept=".txt,.md,.pdf,.docx" id="coverText-file" data-target="coverText">
+          </div>
+          <div class="filemeta" id="coverText-meta">Or drag a file into this box, or paste text below</div>
+          <textarea id="coverText" placeholder="Optional — paste the submitted cover letter here, or upload a PDF / Word / text file above"></textarea>
+        </div>
+        <div class="upfield" data-drop="jdText">
+          <div class="upfield-head"><h3>Job description <span class="reqtag">required</span></h3>
+            <input type="file" class="filenative" accept=".txt,.md,.pdf,.docx" id="jdText-file" data-target="jdText">
+          </div>
+          <div class="filemeta" id="jdText-meta">Or drag a file into this box, or paste text below</div>
+          <textarea id="jdText" placeholder="Paste the job ad text here, or upload a PDF / Word / text file above"></textarea>
+        </div>
+      </div>
+      <div class="genrow">
+        <button class="genbtn" id="genBtn">Generate my prep pack</button>
+        <span class="status" id="genStatus"></span>
+      </div>
+      <div id="genError"></div>
+    </div>
+
+    <div class="view" id="view-overview">
+      <h1 class="pagehead">Prep overview</h1>
+      <p class="pagesub" id="ovSub">A working command centre for this interview, built from the uploaded documents.</p>
+      <div class="stats" id="ovStats"></div>
+      <div class="cols">
+        <div class="panel">
+          <h2><span class="dot teal"></span>Where you're strongest</h2>
+          <ul class="plain" id="ovStrengths"></ul>
+        </div>
+        <div class="panel">
+          <h2><span class="dot amber"></span>What to actively bridge</h2>
+          <ul class="plain" id="ovGaps"></ul>
+          <div class="note" id="ovEligibility" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-fit">
+      <h1 class="pagehead">Fit scan</h1>
+      <p class="pagesub">Job description, resume and cover letter, cross-referenced.</p>
+      <div class="cols">
+        <div class="panel">
+          <h2><span class="dot teal"></span>Strong alignment</h2>
+          <ul class="plain" id="fitStrengths"></ul>
+        </div>
+        <div class="panel">
+          <h2><span class="dot amber"></span>Gaps to bridge</h2>
+          <ul class="plain" id="fitGaps"></ul>
+          <div class="note" id="fitEligibility" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-roadmap">
+      <h1 class="pagehead">180-day low-cost digital uplift roadmap</h1>
+      <p class="pagesub">Built from the job description's own priorities &mdash; existing tools and data before new spend.</p>
+      <div class="phases" id="roadmapPhases"></div>
+    </div>
+
+    <div class="view" id="view-deck">
+      <div class="deckhead">
+        <div>
+          <h1 class="pagehead" style="margin-bottom:2px;">STAR flashcards</h1>
+          <p class="pagesub" style="margin-bottom:0;">Click a card to flip it. Check it off once you can deliver it in 90 seconds, unscripted.</p>
+        </div>
+        <div class="progress-wrap">
+          <span id="progressLabel">0 / 0 rehearsed</span>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+      </div>
+      <div class="deck" id="deck"></div>
+    </div>
+
+    <div class="view" id="view-pitch">
+      <h1 class="pagehead">Winning pitch</h1>
+      <p class="pagesub">"Tell me about yourself" &mdash; tuned to this role.</p>
+      <div class="pitchmeta"><span>~90 SEC</span><span>READ ALOUD, DON'T RECITE</span></div>
+      <div class="pitchbox" id="pitchBox"></div>
+    </div>
+
+    <div class="view" id="view-podcast">
+      <h1 class="pagehead">Podcast script</h1>
+      <p class="pagesub">A two-host run-through of this whole prep pack &mdash; paste it into NotebookLM as a source, or use it to record your own audio.</p>
+      <div class="podcast-actions">
+        <button class="act primary" id="genScript">Generate script</button>
+        <button class="act" id="copyScript" style="display:none;">Copy text</button>
+        <button class="act" id="downloadScript" style="display:none;">Download .txt</button>
+        <span class="copied" id="copiedMsg"></span>
+      </div>
+      <div class="scriptbox" id="scriptbox"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
+<script>
+if(window.pdfjsLib){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+}
+
+const state = { resume:'', cover:'', jd:'', fit:null, star:null, pitch:null, podcast:null, cardState:[] };
+
+async function extractPdfText(arrayBuffer){
+  if(!window.pdfjsLib){ throw new Error('The PDF reader library did not load (likely a network/CDN block). Paste the text directly instead.'); }
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let text = '';
+  for(let i=1;i<=pdf.numPages;i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(it=>it.str).join(' ') + '\n';
+  }
+  return text.trim();
+}
+
+async function extractDocxText(arrayBuffer){
+  if(!window.mammoth){ throw new Error('The Word reader library did not load (likely a network/CDN block). Paste the text directly instead.'); }
+  const result = await mammoth.extractRawText({ arrayBuffer });
+  return result.value.trim();
+}
+
+function withTimeout(promise, ms, label){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} took too long. Paste the text directly instead.`)), ms))
+  ]);
+}
+
+async function handleFile(f, targetId){
+  const ta = document.getElementById(targetId);
+  const meta = document.getElementById(targetId + '-meta');
+  const ext = f.name.split('.').pop().toLowerCase();
+  meta.className = 'filemeta';
+  meta.innerHTML = `<span class="spin"></span>Reading ${f.name}...`;
+  try{
+    let text = '';
+    if(ext === 'txt' || ext === 'md'){
+      text = await withTimeout(f.text(), 15000, 'Reading the file');
+    } else if(ext === 'pdf'){
+      const buf = await f.arrayBuffer();
+      text = await withTimeout(extractPdfText(buf), 20000, 'Reading the PDF');
+    } else if(ext === 'docx'){
+      const buf = await f.arrayBuffer();
+      text = await withTimeout(extractDocxText(buf), 20000, 'Reading the Word file');
+    } else {
+      throw new Error('Unsupported file type. Use .pdf, .docx, .txt or .md, or paste the text directly.');
+    }
+    if(!text){
+      throw new Error('No readable text found in this file (it may be a scanned image). Paste the text directly instead.');
+    }
+    ta.value = text;
+    meta.className = 'filemeta ok';
+    meta.textContent = `${f.name} \u2014 ${text.split(/\s+/).length} words loaded`;
+  }catch(err){
+    console.error('File read error:', err);
+    meta.className = 'filemeta err';
+    meta.textContent = (err && err.message) || 'Could not read this file. Paste the text directly instead.';
+  }
+}
+
+document.querySelectorAll('input[type=file]').forEach(inp=>{
+  inp.addEventListener('change', (e)=>{
+    const f = e.target.files[0];
+    if(f) handleFile(f, inp.dataset.target);
+    inp.value = '';
+  });
+});
+
+document.querySelectorAll('.upfield[data-drop]').forEach(zone=>{
+  const targetId = zone.dataset.drop;
+  ['dragenter','dragover'].forEach(evt=>{
+    zone.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); zone.classList.add('dragover'); });
+  });
+  ['dragleave','dragend'].forEach(evt=>{
+    zone.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); zone.classList.remove('dragover'); });
+  });
+  zone.addEventListener('drop', (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    zone.classList.remove('dragover');
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if(f) handleFile(f, targetId);
+  });
+});
+
+function setView(name){
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelector(`.navbtn[data-view="${name}"]`).classList.add('active');
+  document.getElementById('view-'+name).classList.add('active');
+}
+document.querySelectorAll('.navbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ if(!btn.disabled) setView(btn.dataset.view); });
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  location.reload();
+});
+
+async function callClaude(system, user, maxTokens){
+  const resp = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ system, prompt: user, maxTokens: maxTokens || 1000 })
+  });
+  if(!resp.ok){
+    const errBody = await resp.json().catch(()=>({}));
+    throw new Error(errBody.error || ('Request failed: ' + resp.status));
+  }
+  const data = await resp.json();
+  const clean = data.text.replace(/```json/g,'').replace(/```/g,'').trim();
+  return JSON.parse(clean);
+}
+
+function docsBlock(){
+  const coverPart = state.cover ? `\n\nCOVER LETTER:\n${state.cover}` : '\n\nCOVER LETTER: (not provided \u2014 base the analysis on the resume and job description only)';
+  return `RESUME:\n${state.resume}${coverPart}\n\nJOB DESCRIPTION:\n${state.jd}`;
+}
+
+const STYLE = "Writing style: use simple, everyday English with short sentences \u2014 easy to say out loud under pressure. Do NOT simplify or drop precise business/domain terminology for named processes, tools, methods or artefacts (e.g. UAT, backlog, acceptance criteria, traceability, BPMN, AML/KYC, API, business case) \u2014 keep those exact terms; simplify the sentence structure around them, not the vocabulary of the field.";
+
+async function genFitRoadmap(){
+  const system = `You are a career coach analyzing a candidate's fit for a role. ${STYLE} Respond with ONLY valid JSON, no markdown fences, no preamble. Schema: {"companyName":string,"roleTitle":string,"strengths":[{"title":string,"detail":string}] (4 items),"gaps":[{"title":string,"detail":string}] (3 items),"eligibilityNote":string (empty string if the ad has no eligibility/citizenship/location restriction),"roadmap":[{"range":string,"title":string,"focus":string,"actions":[string,string,string,string],"signal":string}] (exactly 3 phases covering a 180 day period, low-cost, grounded in the JD's actual domain)}. Keep every string concise (under 25 words) except detail fields (under 35 words).`;
+  const user = docsBlock() + "\n\nAnalyze fit and produce a 180-day low-cost onboarding/uplift roadmap for this specific role and domain.";
+  return callClaude(system, user, 1000);
+}
+
+async function genStar(){
+  const system = `You are an interview coach. ${STYLE} Respond with ONLY valid JSON, no markdown fences, no preamble. Schema: an array of exactly 8 objects, each {"q":string (competency name, 2-5 words),"scenario":string (a likely interview question in quotes, under 20 words),"s":string,"t":string,"a":string,"r":string,"smart":string}. Each of s/t/a/r under 28 words, smart under 25 words. Ground every answer in specific evidence from the resume/cover letter, mapped to the job description's key responsibilities. If a competency isn't well evidenced in the resume, say so plainly in that field rather than stretching the match. Cover a spread of competencies relevant to the JD (e.g. discovery, requirements, prioritisation, technical collaboration, quality/validation, stakeholder management, cross-functional delivery, and one more relevant to this JD).`;
+  const user = docsBlock() + "\n\nGenerate the 8 flashcards now.";
+  return callClaude(system, user, 1400);
+}
+
+async function genPitch(){
+  const system = `You are a career coach. ${STYLE} Respond with ONLY valid JSON, no markdown fences, no preamble. Schema: {"pitch":[string,string,string,string]} — a 90-second 'tell me about yourself' answer as 4 paragraphs, first person, tailored to the specific role and company, grounded only in resume/cover-letter facts, around 220-240 words total.`;
+  const user = docsBlock() + "\n\nWrite the pitch now.";
+  return callClaude(system, user, 700);
+}
+
+async function genPodcast(){
+  const system = `You write podcast scripts. ${STYLE} Respond with ONLY valid JSON, no markdown fences, no preamble. Schema: {"script":string} — a two-host conversational script (hosts named MIA and JORDAN, format 'MIA: ...' / 'JORDAN: ...' per line) walking through the fit assessment, the 180-day roadmap, all 8 STAR questions briefly, and closing with the pitch's throughline. Around 550-650 words. Plain text suitable for NotebookLM or reading aloud.`;
+  const context = `COMPANY: ${state.fit.companyName}\nROLE: ${state.fit.roleTitle}\nSTRENGTHS: ${JSON.stringify(state.fit.strengths)}\nGAPS: ${JSON.stringify(state.fit.gaps)}\nROADMAP: ${JSON.stringify(state.fit.roadmap)}\nSTAR: ${JSON.stringify(state.star)}\nPITCH: ${JSON.stringify(state.pitch)}`;
+  return callClaude(system, context + "\n\nWrite the script now.", 1200);
+}
+
+function renderFitRoadmap(){
+  const f = state.fit;
+  document.getElementById('sbRole').textContent = f.roleTitle || 'Role';
+  document.getElementById('sbCompany').textContent = f.companyName || '';
+
+  document.getElementById('ovStats').innerHTML = `
+    <div class="stat"><div class="v">${f.strengths.length}</div><div class="k">strong alignment points</div></div>
+    <div class="stat"><div class="v">${f.gaps.length}</div><div class="k">gaps to actively bridge</div></div>
+    <div class="stat"><div class="v">${f.roadmap.length}</div><div class="k">roadmap phases &middot; 180 days</div></div>
+    <div class="stat"><div class="v" id="statQCount">&mdash;</div><div class="k">STAR questions to rehearse</div></div>`;
+
+  const strengthsHtml = f.strengths.map(s=>`<li><b>${s.title}</b> &mdash; ${s.detail}</li>`).join('');
+  document.getElementById('ovStrengths').innerHTML = strengthsHtml;
+  document.getElementById('fitStrengths').innerHTML = strengthsHtml;
+
+  const gapsHtml = f.gaps.map(g=>`<li><b>${g.title}</b> &mdash; ${g.detail}</li>`).join('');
+  document.getElementById('ovGaps').innerHTML = gapsHtml;
+  document.getElementById('fitGaps').innerHTML = gapsHtml;
+
+  if(f.eligibilityNote && f.eligibilityNote.trim()){
+    document.getElementById('ovEligibility').style.display = 'block';
+    document.getElementById('ovEligibility').textContent = f.eligibilityNote;
+    document.getElementById('fitEligibility').style.display = 'block';
+    document.getElementById('fitEligibility').textContent = f.eligibilityNote;
+  }
+
+  document.getElementById('roadmapPhases').innerHTML = f.roadmap.map(p=>`
+    <div class="phase">
+      <div class="rng">${p.range}</div>
+      <h3>${p.title}</h3>
+      <p class="focus">${p.focus}</p>
+      <ul class="actions">${p.actions.map(a=>`<li>${a}</li>`).join('')}</ul>
+      <div class="signal">Signal: ${p.signal}</div>
+    </div>`).join('');
+
+  ['overview','fit','roadmap'].forEach(v=>document.querySelector(`.navbtn[data-view="${v}"]`).disabled = false);
+}
+
+function renderStar(){
+  document.getElementById('statQCount').textContent = state.star.length;
+  state.cardState = state.star.map(()=>({flipped:false, done:false}));
+  renderDeck();
+  updateProgress();
+  document.querySelector('.navbtn[data-view="deck"]').disabled = false;
+}
+
+function renderDeck(){
+  const deck = document.getElementById('deck');
+  deck.innerHTML = '';
+  state.star.forEach((c,i)=>{
+    const cs = state.cardState[i];
+    const el = document.createElement('div');
+    el.className = 'card' + (cs.flipped?' flipped':'') + (cs.done?' done':'');
+    el.innerHTML = `
+      <button class="checkbtn" data-i="${i}">&#10003;</button>
+      <div class="qn">Q${i+1}</div>
+      <h3>${c.q}</h3>
+      <div class="scn">${c.scenario}</div>
+      <div class="star">
+        <p><b>Situation:</b> ${c.s}</p>
+        <p><b>Task:</b> ${c.t}</p>
+        <p><b>Action:</b> ${c.a}</p>
+        <p><b>Result:</b> ${c.r}</p>
+        <p><b>SMART:</b> ${c.smart}</p>
+      </div>
+      <div class="hint">${cs.flipped ? 'Click to flip back' : 'Click to reveal STAR answer'}</div>`;
+    el.addEventListener('click',(e)=>{
+      if(e.target.closest('.checkbtn')) return;
+      cs.flipped = !cs.flipped; renderDeck();
+    });
+    el.querySelector('.checkbtn').addEventListener('click',(e)=>{
+      e.stopPropagation(); cs.done = !cs.done; renderDeck(); updateProgress();
+    });
+    deck.appendChild(el);
+  });
+}
+function updateProgress(){
+  const done = state.cardState.filter(s=>s.done).length;
+  const total = state.cardState.length;
+  document.getElementById('progressLabel').textContent = `${done} / ${total} rehearsed`;
+  document.getElementById('progressFill').style.width = (total? done/total*100 : 0) + '%';
+  document.getElementById('stampNum').textContent = `${done}/${total}`;
+}
+
+function renderPitch(){
+  document.getElementById('pitchBox').innerHTML = state.pitch.pitch.map(p=>`<p>${p}</p>`).join('');
+  document.querySelector('.navbtn[data-view="pitch"]').disabled = false;
+}
+
+document.getElementById('genBtn').addEventListener('click', async ()=>{
+  state.resume = document.getElementById('resumeText').value.trim();
+  state.cover = document.getElementById('coverText').value.trim();
+  state.jd = document.getElementById('jdText').value.trim();
+  const errBox = document.getElementById('genError');
+  errBox.innerHTML = '';
+  if(!state.resume || !state.jd){
+    errBox.innerHTML = '<div class="errbox">Add at least a resume and a job description to generate the pack.</div>';
+    return;
+  }
+  const btn = document.getElementById('genBtn');
+  const status = document.getElementById('genStatus');
+  btn.disabled = true;
+
+  const steps = [
+    { label: 'Analyzing fit and building the roadmap', run: genFitRoadmap, onDone: (r)=>{ state.fit = r; renderFitRoadmap(); } },
+    { label: 'Drafting your STAR flashcards', run: genStar, onDone: (r)=>{ state.star = r; renderStar(); } },
+    { label: 'Writing your pitch', run: genPitch, onDone: (r)=>{ state.pitch = r; renderPitch(); } }
+  ];
+
+  let firstViewShown = false;
+  for(const step of steps){
+    status.innerHTML = `<span class="spin"></span>${step.label}...`;
+    try{
+      const result = await step.run();
+      step.onDone(result);
+      status.innerHTML = `<span class="ok">${step.label} &#10003;</span>`;
+      if(!firstViewShown){ setView('overview'); firstViewShown = true; }
+    }catch(err){
+      errBox.innerHTML = `<div class="errbox">Something went wrong generating this section (${err.message}). Try Generate again.</div>`;
+      status.innerHTML = '';
+      btn.disabled = false;
+      return;
+    }
+  }
+  status.innerHTML = '<span class="ok">Prep pack ready &#10003;</span>';
+  btn.disabled = false;
+});
+
+document.getElementById('genScript').addEventListener('click', async ()=>{
+  const btn = document.getElementById('genScript');
+  const box = document.getElementById('scriptbox');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Writing script...';
+  try{
+    const result = await genPodcast();
+    state.podcast = result;
+    box.textContent = result.script;
+    box.classList.add('show');
+    document.getElementById('copyScript').style.display = 'inline-block';
+    document.getElementById('downloadScript').style.display = 'inline-block';
+    btn.textContent = 'Regenerate script';
+  }catch(err){
+    box.classList.add('show');
+    box.textContent = 'Could not generate the script (' + err.message + '). Try again.';
+  }
+  btn.disabled = false;
+});
+
+document.getElementById('copyScript').addEventListener('click', ()=>{
+  if(!state.podcast) return;
+  navigator.clipboard.writeText(state.podcast.script).then(()=>{
+    const msg = document.getElementById('copiedMsg');
+    msg.textContent = 'Copied'; setTimeout(()=>msg.textContent='',1800);
+  });
+});
+document.getElementById('downloadScript').addEventListener('click', ()=>{
+  if(!state.podcast) return;
+  const blob = new Blob([state.podcast.script], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'Interview_Podcast_Script.txt'; a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
