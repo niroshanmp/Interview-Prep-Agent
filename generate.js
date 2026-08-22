@@ -14,7 +14,14 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const { system, prompt, maxTokens } = req.body || {};
+  const { system, prompt, maxTokens, passphrase } = req.body || {};
+
+  const requiredCode = process.env.PREP_ACCESS_CODE;
+  if (requiredCode && passphrase !== requiredCode) {
+    res.status(401).json({ error: 'Access code required or incorrect. Ask whoever shared this tool with you for the code.' });
+    return;
+  }
+
   if (!system || !prompt) {
     res.status(400).json({ error: 'Request must include both "system" and "prompt".' });
     return;
