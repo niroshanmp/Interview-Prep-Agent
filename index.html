@@ -164,7 +164,12 @@
 
     <div class="view active" id="view-upload">
       <h1 class="pagehead">Build your prep pack</h1>
-      <p class="pagesub">Upload a PDF, Word (.docx) or text file for each document, or paste the content directly.</p>
+           <p class="pagesub">Upload a PDF, Word (.docx) or text file for each document, or paste the content directly.</p>
+      <div class="upfield" style="margin-bottom:18px;">
+        <div class="upfield-head"><h3>Access code <span class="reqtag">required</span></h3></div>
+        <input type="text" id="passphraseInput" placeholder="Enter the access code you were given" value="" style="width:100%;padding:9px 12px;border:1px solid var(--line);background:var(--paper-2);font-family:var(--sans);font-size:13px;">
+      </div>
+      <script>document.getElementById('passphraseInput').value = state.passphrase;</script>
       <div class="upfields">
         <div class="upfield" data-drop="resumeText">
           <div class="upfield-head"><h3>Resume / CV <span class="reqtag">required</span></h3>
@@ -277,7 +282,7 @@ if(window.pdfjsLib){
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 }
 
-const state = { resume:'', cover:'', jd:'', fit:null, star:null, pitch:null, podcast:null, cardState:[] };
+const state = { resume:'', cover:'', jd:'', fit:null, star:null, pitch:null, podcast:null, cardState:[], passphrase: localStorage.getItem('prepToolPassphrase') || '' };
 
 async function extractPdfText(arrayBuffer){
   if(!window.pdfjsLib){ throw new Error('The PDF reader library did not load (likely a network/CDN block). Paste the text directly instead.'); }
@@ -374,11 +379,16 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
   location.reload();
 });
 
+document.getElementById('passphraseInput').addEventListener('input', (e)=>{
+  state.passphrase = e.target.value;
+  localStorage.setItem('prepToolPassphrase', e.target.value);
+});
+
 async function callClaude(system, user, maxTokens){
   const resp = await fetch("/api/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ system, prompt: user, maxTokens: maxTokens || 1000 })
+        body: JSON.stringify({ system, prompt: user, maxTokens: maxTokens || 1000, passphrase: state.passphrase })
   });
   if(!resp.ok){
     const errBody = await resp.json().catch(()=>({}));
