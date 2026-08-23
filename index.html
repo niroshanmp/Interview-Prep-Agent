@@ -534,13 +534,15 @@ document.getElementById('genBtn').addEventListener('click', async ()=>{
   btn.disabled = true;
 
   const steps = [
-    { label: 'Analyzing fit and building the roadmap', run: genFitRoadmap, onDone: (r)=>{ state.fit = r; renderFitRoadmap(); } },
-    { label: 'Drafting your STAR flashcards', run: genStar, onDone: (r)=>{ state.star = r; renderStar(); } },
-    { label: 'Writing your pitch', run: genPitch, onDone: (r)=>{ state.pitch = r; renderPitch(); } }
+    { label: 'Analyzing fit and building the roadmap', run: genFitRoadmap, onDone: (r)=>{ state.fit = r; renderFitRoadmap(); }, done: ()=>!!state.fit },
+    { label: 'Drafting your STAR flashcards', run: genStar, onDone: (r)=>{ state.star = r; renderStar(); }, done: ()=>!!state.star },
+    { label: 'Writing your pitch', run: genPitch, onDone: (r)=>{ state.pitch = r; renderPitch(); }, done: ()=>!!state.pitch }
   ];
 
-  let firstViewShown = false;
+  let firstViewShown = !!state.fit;
+  const failures = [];
   for(const step of steps){
+    if(step.done()) continue;
     status.innerHTML = `<span class="spin"></span>${step.label}...`;
     try{
       const result = await step.run();
@@ -548,13 +550,16 @@ document.getElementById('genBtn').addEventListener('click', async ()=>{
       status.innerHTML = `<span class="ok">${step.label} &#10003;</span>`;
       if(!firstViewShown){ setView('overview'); firstViewShown = true; }
     }catch(err){
-      errBox.innerHTML = `<div class="errbox">Something went wrong generating this section (${err.message}). Try Generate again.</div>`;
-      status.innerHTML = '';
-      btn.disabled = false;
-      return;
+      console.error(step.label + ' failed:', err);
+      failures.push(`${step.label}: ${err.message}`);
     }
   }
-  status.innerHTML = '<span class="ok">Prep pack ready &#10003;</span>';
+  if(failures.length){
+    errBox.innerHTML = `<div class="errbox">Some sections didn't generate \u2014 the rest are ready above. Click "Generate my prep pack" again to retry just what's missing:<br>${failures.map(f=>`\u2022 ${f}`).join('<br>')}</div>`;
+    status.innerHTML = '';
+  } else {
+    status.innerHTML = '<span class="ok">Prep pack ready &#10003;</span>';
+  }
   btn.disabled = false;
 });
 
