@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: Math.min(Number(maxTokens) || 1000, 2000),
+        max_tokens: Math.min(Number(maxTokens) || 1000, 2400),
         system,
         messages: [{ role: 'user', content: prompt }]
       })
