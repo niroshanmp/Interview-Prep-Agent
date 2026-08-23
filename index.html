@@ -415,7 +415,7 @@ async function genFitRoadmap(){
 async function genStar(){
   const system = `You are an interview coach. ${STYLE} Respond with ONLY valid JSON, no markdown fences, no preamble. Schema: an array of exactly 8 objects, each {"q":string (competency name, 2-5 words),"scenario":string (a likely interview question in quotes, under 20 words),"s":string,"t":string,"a":string,"r":string,"smart":string}. Each of s/t/a/r under 28 words, smart under 25 words. Ground every answer in specific evidence from the resume/cover letter, mapped to the job description's key responsibilities. If a competency isn't well evidenced in the resume, say so plainly in that field rather than stretching the match. Cover a spread of competencies relevant to the JD (e.g. discovery, requirements, prioritisation, technical collaboration, quality/validation, stakeholder management, cross-functional delivery, and one more relevant to this JD).`;
   const user = docsBlock() + "\n\nGenerate the 8 flashcards now.";
-  return callClaude(system, user, 1400);
+  return callClaude(system, user, 2200);
 }
 
 async function genPitch(){
